@@ -1,19 +1,27 @@
 {
   "name": "encrypted-chat-tutorial",
   "version": "1.0.0",
-  "node":"8.1.4",
   "license": "MIT",
   "author": "securityops@riseup.net",
   "description": "End-to-end RSA-2048 encrypted chat application.",
   "main": "app.js",
   "engines": {
-    "node": ">=7.6"
+    "node": ">=22"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "node --test"
   },
   "dependencies": {
-    "express": "4.18.2",
-    "socket.io": ">=2.4.0"
+    "express": "4.22.2",
+    "socket.io": "4.8.3"
+  },
+  "overrides": {
+    "express": {
+      "qs": "6.16.0"
+    }
+  },
+  "devDependencies": {
+    "socket.io-client": "4.8.3"
   }
 }

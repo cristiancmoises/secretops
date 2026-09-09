@@ -1,3 +1,29 @@
+# Secret Ops Chat
+
+Use Node.js 22 or newer and the committed dependency lockfile:
+
+```sh
+npm ci --ignore-scripts --no-audit --no-fund
+npm test
+npm start
+```
+
+The server listens on port 3000, or the value of `PORT`. Restart existing
+deployments after installing the update. The browser now loads its Socket.IO
+client from the same server so its protocol matches the installed server.
+
+Express remains on the 4.x line at 4.22.2. Its query-parser dependency is
+overridden to qs 6.16.0 because Express's declared range still selects versions
+affected by [GHSA-x5fp-wj9c-mxmx](https://github.com/advisories/GHSA-x5fp-wj9c-mxmx)
+and [GHSA-4mjr-xmp4-gh2g](https://github.com/advisories/GHSA-4mjr-xmp4-gh2g).
+Keep this override until a reviewed Express release includes a fixed range.
+
+Tests cover static-file boundaries, the two query-parser regressions, Socket.IO
+connection compatibility, two-person room admission, message validation and
+disconnection. These checks do not establish cryptographic identity verification
+or audit the browser libraries fetched from external CDNs. The original tutorial
+and its limitations follow below.
+
 # An Introduction To Utilizing Public-Key Cryptography In Javascript
 
 ## Open Cryptochat - A Tutorial

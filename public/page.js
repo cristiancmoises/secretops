@@ -38,7 +38,11 @@ const vm = new Vue ({
       })
 
       // Notify user that they have lost the socket connection
-      this.socket.on('disconnect', () => this.addNotification('Lost Connection'))
+      this.socket.on('disconnect', () => {
+        this.currentRoom = null
+        this.destinationPublicKey = null
+        this.addNotification('Lost Connection')
+      })
 
       // Decrypt and display message when received
       this.socket.on('MESSAGE', async (message) => {
@@ -70,8 +74,8 @@ const vm = new Vue ({
       })
 
       // Clear destination public key if other user leaves room
-      this.socket.on('user disconnected', () => {
-        this.notify(`User Disconnected - ${this.getKeySnippet(this.destinationKey)}`)
+      this.socket.on('USER_DISCONNECTED', () => {
+        this.addNotification('The other user disconnected.')
         this.destinationPublicKey = null
       })
 
@@ -121,15 +125,18 @@ const vm = new Vue ({
 
     /** Join the specified chatroom */
     joinRoom () {
-      if (this.pendingRoom !== this.currentRoom && this.originPublicKey) {
-        this.addNotification(`Connecting to Room - ${this.pendingRoom}`)
+      if (typeof this.pendingRoom !== 'string' && typeof this.pendingRoom !== 'number') return
+      const roomName = String(this.pendingRoom).trim()
+      if (!roomName || roomName.length > 128) return
+      if (roomName !== this.currentRoom && this.originPublicKey) {
+        this.addNotification(`Connecting to Room - ${roomName}`)
 
         // Reset room state variables
         this.messages = []
         this.destinationPublicKey = null
 
         // Emit room join request.
-        this.socket.emit('JOIN', this.pendingRoom)
+        this.socket.emit('JOIN', roomName)
       }
     },
 
